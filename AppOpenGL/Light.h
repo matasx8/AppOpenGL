@@ -14,6 +14,7 @@ public:
 		GLfloat aIntensity, GLfloat dIntensity);
 
 	float* GetIntensity() { return &diffuseIntensity; };
+	glm::vec3* GetColour() { return &colour; }
 
 	ShadowMap* GetShadowMap() { return shadowMap; }
 	~Light();
