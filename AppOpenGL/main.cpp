@@ -13,9 +13,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <imgui.h>
-#include <imgui_impl_glfw_gl3.h>
-
 #include "CommonValues.h"
 
 #include "AppWindow.h"
@@ -27,7 +24,7 @@
 #include "Material.h"
 #include "PointLight.h"
 #include "SpotLight.h"
-
+#include "Gui.h"
 #include "Model.h"
 
 
@@ -310,14 +307,7 @@ int main()
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeigt(), 0.1f, 100.0f);
 
-	ImGui::CreateContext();
-	ImGui_ImplGlfwGL3_Init(mainWindow.mainWindow, false);
-	ImGui::StyleColorsDark();
-
-	bool show_demo_window = true;
-	bool show_another_window = false;
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
+	Gui gui = Gui(&mainWindow);
 	//Loop untill window closed
 	while (!mainWindow.getShouldClose())
 	{
@@ -334,37 +324,10 @@ int main()
 		DirectionalShadowMapPass(&mainLight);
 		RenderPass(camera.calculateViewMatrix(), projection);
 
-		/*{
-			static float f = 0.0f;
-			static int counter = 0;
-			ImGui::Text("Hello, world!");                           // Display some text (you can use a format string too)
-			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f    
-			ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+		gui.RenderGui(&mainLight);
 
-			ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our windows open/close state
-			ImGui::Checkbox("Another Window", &show_another_window);
-
-			if (ImGui::Button("Button"))                            // Buttons return true when clicked (NB: most widgets return true when edited/activated)
-				counter++;
-			ImGui::SameLine();
-			ImGui::Text("counter = %d", counter);
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		}*/
-		ImGui_ImplGlfwGL3_NewFrame();
-		ImGui::Text("Hello, world!");
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::SliderFloat3("Directioal Light", glm::value_ptr(*mainLight.getDirectionArr()), -100.0f, 100.0f);
-		ImGui::SliderFloat("Brightness", mainLight.GetIntensity(), 0.0f, 1.0f);
-		ImGui::ColorPicker3("Directional Light Color", glm::value_ptr(*mainLight.GetColour()));
-		ImGui::Render();
-		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
-		//ImGui_ImplGlfwGL3_Shutdown();
 		mainWindow.swapBuffers();
 	}
-
-	ImGui_ImplGlfwGL3_Shutdown();
-	ImGui::DestroyContext();
 	//glfwTerminate();
 
 	return 0;
