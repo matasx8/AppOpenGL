@@ -168,6 +168,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="OmniShadowMap.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="OmniShadowMap.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShadowMap.h" />
@@ -198,14 +200,13 @@
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\directionalShadowMapFragment.shader" />
-    <None Include="Shaders\directionalShadowMapVertex.shader" />
     <None Include="Shaders\directional_shadow_map.frag" />
     <None Include="Shaders\directional_shadow_map.vert" />
-    <None Include="Shaders\fragmentShader.shader" />
+    <None Include="Shaders\omni_shadow_map_fragment.shader" />
+    <None Include="Shaders\omni_shadow_map_geom.shader" />
+    <None Include="Shaders\omni_shadow_map_vertex.shader" />
     <None Include="Shaders\shader.frag" />
     <None Include="Shaders\shader.vert" />
-    <None Include="Shaders\vertexShader.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
