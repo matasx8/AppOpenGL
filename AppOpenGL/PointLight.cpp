@@ -24,7 +24,7 @@ PointLight::PointLight(GLfloat shadowWidth, GLuint shadowHeight,
 	farPlane = far;
 
 	float aspect = (float)shadowWidth / (float)shadowHeight;
-	lightProj = glm::perspective(glm::radians(90.f), aspect, near, far);
+	lightProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
 
 	shadowMap = new OmniShadowMap();
 	shadowMap->Init(shadowWidth, shadowHeight);
@@ -46,7 +46,7 @@ std::vector<glm::mat4> PointLight::CalculateLightTransform()
 {
 	std::vector<glm::mat4> lightMatrices;
 	//+x, -x
-	lightMatrices.push_back(lightProj * glm::lookAt(position, position + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+	lightMatrices.push_back(lightProj * glm::lookAt(position, position + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 	lightMatrices.push_back(lightProj * glm::lookAt(position, position + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 	//+y, -y
 	lightMatrices.push_back(lightProj * glm::lookAt(position, position + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
