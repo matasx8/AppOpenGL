@@ -13,6 +13,7 @@
 #include "SpotLight.h"
 #include "Skybox.h"
 #include "Shader.h"
+#include "Gui.h"
 
 class Renderer
 {
@@ -35,6 +36,7 @@ public:
 	void SetLighting();
 	void SetShaders();
 	void SetMaterials();
+	void SetImgui(AppWindow* window);
 
 	//will add shader to shadermap
 	void AddShader(std::string shaderVertLocation, std::string shaderFragLocation);
@@ -91,5 +93,7 @@ private:
 	Model blackhawk;
 
 	Camera camera;
+
+	Gui* gui;
 };
 

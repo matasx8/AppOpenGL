@@ -49,7 +49,8 @@ void Renderer::Render(float dt)
 	}
 	RenderPass();
 
-	//gui.RenderGui(&mainLight);
+	//if(gui)
+	gui->RenderGui(&mainLight);
 }
 
 void Renderer::RenderPass()
@@ -257,6 +258,11 @@ void Renderer::SetMaterials()
 
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
+}
+
+void Renderer::SetImgui(AppWindow* window)
+{
+	gui = new Gui(window);
 }
 
 void Renderer::AddShader(std::string shaderVertLocation, std::string shaderFragLocation)

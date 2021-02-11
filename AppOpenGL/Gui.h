@@ -16,6 +16,7 @@ public:
 		Basic,
 		Light
 	};
+	Gui();
 
 	Gui(AppWindow* window);
 

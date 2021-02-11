@@ -46,9 +46,11 @@ int main()
 	renderer->CreateModels();
 	renderer->SetShaders();
 	renderer->SetLighting();
+	renderer->SetSkybox("temp");
+	renderer->SetImgui(&mainWindow);
 
 
-	Gui gui = Gui(&mainWindow);
+	//Gui gui = Gui(&mainWindow);
 	//Loop untill window closed
 	while (!mainWindow.getShouldClose())
 	{

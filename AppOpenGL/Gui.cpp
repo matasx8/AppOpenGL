@@ -1,5 +1,7 @@
 #include "Gui.h"
 
+Gui::Gui() {};
+
 Gui::Gui(AppWindow* window)
 {
 	ImGui::CreateContext();
