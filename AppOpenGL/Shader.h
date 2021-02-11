@@ -52,6 +52,8 @@ public:
 
 	void UseShader();
 	void ClearShader();
+
+
 	~Shader();
 
 private:

@@ -145,7 +145,7 @@ float CalcDirectionalShadowFactor(vec4 DirectionalLightSpacePos)
 	
 	float shadow = 0.0;
 	vec2 texelSize = 1.0 / textureSize(directionalShadowMap, 0);
-	for(int x = -2; x <= 2; ++x)
+    for(int x = -2; x <= 2; ++x)
 	{
 		for(int y = -2; y <= 2; ++y)
 		{

@@ -170,6 +170,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="OmniShadowMap.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="Skybox.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="OmniShadowMap.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="Skybox.h" />
@@ -202,13 +204,13 @@
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\directional_shadow_map.frag" />
-    <None Include="Shaders\directional_shadow_map.vert" />
+    <None Include="Shaders\directional_shadow_map_fragment.shader" />
+    <None Include="Shaders\directional_shadow_map_vertex.shader" />
     <None Include="Shaders\omni_shadow_map_fragment.shader" />
     <None Include="Shaders\omni_shadow_map_geom.shader" />
     <None Include="Shaders\omni_shadow_map_vertex.shader" />
-    <None Include="Shaders\shader.frag" />
-    <None Include="Shaders\shader.vert" />
+    <None Include="Shaders\shader_fragment.shader" />
+    <None Include="Shaders\shader_vertex.shader" />
     <None Include="Shaders\skybox_fragment.shader" />
     <None Include="Shaders\skybox_vertex.shader" />
   </ItemGroup>
