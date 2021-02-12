@@ -6,7 +6,6 @@
 #include <imgui_impl_glfw_gl3.h>
 
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/glm.hpp>
 
 class Gui
 {
@@ -20,7 +19,7 @@ public:
 
 	Gui(AppWindow* window);
 
-	void RenderGui(DirectionalLight* light);
+	void RenderGui(DirectionalLight* light, int* xOffset, int* yOffset);
 
 	~Gui();
 };

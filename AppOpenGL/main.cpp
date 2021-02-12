@@ -37,7 +37,7 @@ GLfloat lastTime = 0.0f;
 
 int main()
 {
-	mainWindow = AppWindow(1366, 768);
+	mainWindow = AppWindow();
 	mainWindow.Initialise();
 
 	Renderer* renderer = new Renderer(&mainWindow);

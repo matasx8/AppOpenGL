@@ -47,6 +47,10 @@ public:
 	void CalcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices,
 		unsigned int verticeCount, unsigned int vLength, unsigned int normalOffset);
 
+	int* GetXOffset() { return &xOffset; }
+	int* GetYOffset() { return &yOffset; }
+	glm::highp_ivec2* GetXYOffset() { return &glm::highp_ivec2(xOffset, yOffset); }
+
 	~Renderer();
 
 private:
@@ -58,6 +62,8 @@ private:
 
 
 	AppWindow* window;
+	int xOffset;
+	int yOffset;
 
 	bool usingSkybox;
 	Skybox skybox;

@@ -4,6 +4,8 @@
 Renderer::Renderer(AppWindow* window)
 {
 	this->window = window;
+	xOffset = 200;
+	yOffset = 150;
 	usingSkybox = false;
 
 	projection = glm::perspective(glm::radians(60.0f), (GLfloat)window->getBufferWidth() / window->getBufferHeigt(), 0.1f, 100.0f);
@@ -49,13 +51,23 @@ void Renderer::Render(float dt)
 	}
 	RenderPass();
 
-	//if(gui)
-	gui->RenderGui(&mainLight);
+	/*ImGui_ImplGlfwGL3_NewFrame();
+	ImGui::GetWindowDrawList()->AddImage((void*)mainLight.GetShadowMap()->GetFBO(), ImVec2(ImGui::GetCursorScreenPos()),
+			ImVec2(ImGui::GetCursorScreenPos().x + window->getBufferWidth() / 2, ImGui::GetCursorScreenPos().y + window->getBufferHeigt() / 2), ImVec2(0, 1), ImVec2(1, 0));
+	ImGui::Render();
+	ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());*/
+	//ImGui::Begin("Test Window");
+	// g.OverlayDrawList.AddImage(tex_id, pos + ImVec2(1,0)*sc, pos+ImVec2(1,0)*sc + size*sc, uv[2], uv[3], IM_COL32(0,0,0,48));        // Shadow
+	//ImGui::GetWindowDrawList()->AddImage((void*)mainLight.GetShadowMap()->GetFBO(), ImVec2(ImGui::GetCursorScreenPos()),
+	//	ImVec2(ImGui::GetCursorScreenPos().x + window->getBufferWidth() / 2, ImGui::GetCursorScreenPos().y + window->getBufferHeigt() / 2), ImVec2(0, 1), ImVec2(1, 0));
+	//ImGui::End();
+		//if(gui)
+	gui->RenderGui(&mainLight, GetXOffset(), GetYOffset());
 }
 
 void Renderer::RenderPass()
 {
-	glViewport(0, 0, 1366, 768);//make dynamic
+	glViewport(0 + xOffset, 0 + yOffset, 1280, 720);//make dynamic
 	//Clear window
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -362,4 +374,5 @@ Renderer::~Renderer()
 	delete shader;
 	delete omniShadowShader;
 	delete directionalShadowShader;
+	delete gui;
 }
