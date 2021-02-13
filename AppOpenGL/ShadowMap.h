@@ -18,6 +18,8 @@ public:
 	GLuint GetShadowWidth() { return shadowWidth; }
 	GLuint GetShadowHeight() { return shadowHeight; }
 
+	GLuint GetFBO() { return FBO; };
+
 	~ShadowMap();
 
 protected:

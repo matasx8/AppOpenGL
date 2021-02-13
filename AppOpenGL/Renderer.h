@@ -13,6 +13,7 @@
 #include "SpotLight.h"
 #include "Skybox.h"
 #include "Shader.h"
+#include "Gui.h"
 
 class Renderer
 {
@@ -25,7 +26,8 @@ public:
 
 	Renderer(AppWindow* window);
 
-	void Render(float dt);
+	void Render(float dt, unsigned int fbo);
+	void Render2(float dt);
 	//should check for somekind of flag, if not all flags set then fail
 
 	//Will set up the Skybox
@@ -35,6 +37,7 @@ public:
 	void SetLighting();
 	void SetShaders();
 	void SetMaterials();
+	void SetImgui(AppWindow* window);
 
 	//will add shader to shadermap
 	void AddShader(std::string shaderVertLocation, std::string shaderFragLocation);
@@ -44,6 +47,11 @@ public:
 	void CreateModels();
 	void CalcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices,
 		unsigned int verticeCount, unsigned int vLength, unsigned int normalOffset);
+
+	int* GetXOffset() { return &xOffset; }
+	int* GetYOffset() { return &yOffset; }
+	int* GetRWW() { return &RenderWindowWidth; }
+	int* GETRWH() { return &RenderWindowHeight; }
 
 	~Renderer();
 
@@ -56,6 +64,10 @@ private:
 
 
 	AppWindow* window;
+	int xOffset;
+	int yOffset;
+	int RenderWindowWidth;
+	int RenderWindowHeight;
 
 	bool usingSkybox;
 	Skybox skybox;
@@ -91,5 +103,7 @@ private:
 	Model blackhawk;
 
 	Camera camera;
+
+	Gui* gui;
 };
 

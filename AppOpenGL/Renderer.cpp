@@ -4,6 +4,10 @@
 Renderer::Renderer(AppWindow* window)
 {
 	this->window = window;
+	xOffset = 200;
+	yOffset = 150;
+	RenderWindowWidth = 1280;
+	RenderWindowHeight = 720;
 	usingSkybox = false;
 
 	projection = glm::perspective(glm::radians(60.0f), (GLfloat)window->getBufferWidth() / window->getBufferHeigt(), 0.1f, 100.0f);
@@ -30,7 +34,7 @@ Renderer::Renderer(AppWindow* window)
 //	}
 //}
 
-void Renderer::Render(float dt)
+void Renderer::Render(float dt, unsigned int fbo)
 {
 	// Get + Handle user input events
 	glfwPollEvents();
@@ -47,14 +51,27 @@ void Renderer::Render(float dt)
 	{
 		OmniShadowMapPass(&spotLights[i]);
 	}
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glEnable(GL_DEPTH_TEST);
+
 	RenderPass();
 
-	//gui.RenderGui(&mainLight);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	ImGui_ImplGlfwGL3_NewFrame();
+	gui->RenderPlayerWindow(fbo, &RenderWindowWidth, &RenderWindowHeight);
+	gui->RenderGui(&mainLight, &RenderWindowWidth, &RenderWindowHeight);
+	ImGui::Render();
+	ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
 
 void Renderer::RenderPass()
 {
-	glViewport(0, 0, 1366, 768);//make dynamic
+	glViewport(0, 0, RenderWindowWidth, RenderWindowHeight);//make dynamic
 	//Clear window
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -134,6 +151,16 @@ void Renderer::OmniShadowMapPass(PointLight* light)
 	omniShadowShader->Validate();
 
 	RenderScene();
+
+//	ImGui_ImplGlfwGL3_NewFrame();
+//	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+//	//GLint drawFboId = 0, readFboId = 0;
+////	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
+//
+//	//ImGui::GetWindowDrawList()->AddImage((void*) drawFboId, ImVec2(ImGui::GetCursorScreenPos()),
+//	//	ImVec2(ImGui::GetCursorScreenPos().x + window->getBufferWidth() / 2, ImGui::GetCursorScreenPos().y + window->getBufferHeigt() / 2), ImVec2(0, 1), ImVec2(1, 0));
+//	ImGui::Render();
+//	ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -259,6 +286,11 @@ void Renderer::SetMaterials()
 	dullMaterial = Material(0.3f, 4);
 }
 
+void Renderer::SetImgui(AppWindow* window)
+{
+	gui = new Gui(window);
+}
+
 void Renderer::AddShader(std::string shaderVertLocation, std::string shaderFragLocation)
 {
 	Shader shader;//find out if create can be optimized
@@ -356,4 +388,5 @@ Renderer::~Renderer()
 	delete shader;
 	delete omniShadowShader;
 	delete directionalShadowShader;
+	delete gui;
 }
