@@ -26,7 +26,8 @@ public:
 
 	Renderer(AppWindow* window);
 
-	void Render(float dt);
+	void Render(float dt, unsigned int fbo);
+	void Render2(float dt);
 	//should check for somekind of flag, if not all flags set then fail
 
 	//Will set up the Skybox
@@ -49,7 +50,8 @@ public:
 
 	int* GetXOffset() { return &xOffset; }
 	int* GetYOffset() { return &yOffset; }
-	glm::highp_ivec2* GetXYOffset() { return &glm::highp_ivec2(xOffset, yOffset); }
+	int* GetRWW() { return &RenderWindowWidth; }
+	int* GETRWH() { return &RenderWindowHeight; }
 
 	~Renderer();
 
@@ -64,6 +66,8 @@ private:
 	AppWindow* window;
 	int xOffset;
 	int yOffset;
+	int RenderWindowWidth;
+	int RenderWindowHeight;
 
 	bool usingSkybox;
 	Skybox skybox;
