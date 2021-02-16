@@ -26,7 +26,7 @@ public:
 
 	Renderer(AppWindow* window);
 
-	void Render(float dt, unsigned int fbo);
+	void Render(float dt);
 	void Render2(float dt);
 	//should check for somekind of flag, if not all flags set then fail
 
@@ -38,6 +38,7 @@ public:
 	void SetShaders();
 	void SetMaterials();
 	void SetImgui(AppWindow* window);
+	void SetFBO();
 
 	//will add shader to shadermap
 	void AddShader(std::string shaderVertLocation, std::string shaderFragLocation);
@@ -89,6 +90,8 @@ private:
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0,
 		uniformEyePosition = 0, uniformSpecularIntensity = 0, uniformShininess = 0, uniformDirectionalLightTransform = 0,
 		uniformOmniLightPos = 0, uniformFarPlane = 0;
+
+	unsigned int framebuffer;
 
 	Texture brickTexture;
 	Texture dirtTexture;

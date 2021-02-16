@@ -17,6 +17,9 @@ Renderer::Renderer(AppWindow* window)
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
 
 	pointLightCount = 0; spotLightCount = 0;
+
+	//init stuff
+	SetFBO();
 }
 
 //Renderer::Renderer(Projection type)
@@ -34,7 +37,7 @@ Renderer::Renderer(AppWindow* window)
 //	}
 //}
 
-void Renderer::Render(float dt, unsigned int fbo)
+void Renderer::Render(float dt)
 {
 	// Get + Handle user input events
 	glfwPollEvents();
@@ -51,7 +54,7 @@ void Renderer::Render(float dt, unsigned int fbo)
 	{
 		OmniShadowMapPass(&spotLights[i]);
 	}
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glEnable(GL_DEPTH_TEST);
 
 	RenderPass();
@@ -63,7 +66,7 @@ void Renderer::Render(float dt, unsigned int fbo)
 
 	//GUI
 	ImGui_ImplGlfwGL3_NewFrame();
-	gui->RenderPlayerWindow(fbo, &RenderWindowWidth, &RenderWindowHeight);
+	gui->RenderPlayerWindow(framebuffer, &RenderWindowWidth, &RenderWindowHeight);
 	gui->RenderGui(&mainLight, &RenderWindowWidth, &RenderWindowHeight);
 	ImGui::Render();
 	ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
@@ -72,7 +75,7 @@ void Renderer::Render(float dt, unsigned int fbo)
 
 void Renderer::RenderPass()
 {
-	glViewport(0, 0, RenderWindowWidth, RenderWindowHeight);//make dynamic
+	glViewport(0, 0, 1280, 720);
 	//Clear window
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -286,6 +289,32 @@ void Renderer::SetMaterials()
 void Renderer::SetImgui(AppWindow* window)
 {
 	gui = new Gui(window);
+}
+
+void Renderer::SetFBO()
+{
+	framebuffer;
+	glGenFramebuffers(1, &framebuffer);
+
+	//create a color attachement texture
+	unsigned int textureColorbuffer;
+	glGenTextures(1, &textureColorbuffer);
+	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1280, 720, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1280, 720);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "fboError\n";
 }
 
 void Renderer::AddShader(std::string shaderVertLocation, std::string shaderFragLocation)
