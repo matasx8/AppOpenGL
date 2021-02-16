@@ -76,10 +76,8 @@ private:
 
 	std::vector<Mesh*> MeshList;
 
-	//std::unordered_map<std::string, Shader>* ShaderMap;
-	Shader* shader;
-	Shader* directionalShadowShader;
-	Shader* omniShadowShader;
+	//consider using unique pointers so I wouldn't need to loop over the map to delete
+	std::unordered_map<std::string, Shader*>* ShaderMap;
 
 	DirectionalLight mainLight;
 	PointLight pointLights[MAX_POINT_LIGHTS];

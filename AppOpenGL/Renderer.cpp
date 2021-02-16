@@ -12,7 +12,7 @@ Renderer::Renderer(AppWindow* window)
 
 	projection = glm::perspective(glm::radians(60.0f), (GLfloat)window->getBufferWidth() / window->getBufferHeigt(), 0.1f, 100.0f);
 
-	//ShaderMap = new std::unordered_map<std::string, Shader>();
+    ShaderMap = new std::unordered_map<std::string, Shader*>();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
 
@@ -61,6 +61,7 @@ void Renderer::Render(float dt, unsigned int fbo)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//GUI
 	ImGui_ImplGlfwGL3_NewFrame();
 	gui->RenderPlayerWindow(fbo, &RenderWindowWidth, &RenderWindowHeight);
 	gui->RenderGui(&mainLight, &RenderWindowWidth, &RenderWindowHeight);
@@ -79,7 +80,7 @@ void Renderer::RenderPass()
 	if(usingSkybox)
 		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
 
-
+	Shader* shader = (*ShaderMap)["shader"];
 	shader->UseShader();//optimize this
 
 	uniformModel = shader->GetModelLocation();
@@ -114,17 +115,18 @@ void Renderer::RenderPass()
 
 void Renderer::DirectionalShadowMapPass(DirectionalLight* light)
 {
-	directionalShadowShader->UseShader();
+	Shader* shader = (*ShaderMap)["directional_shadow_map"];
+	shader->UseShader();
 
 	glViewport(0, 0, light->GetShadowMap()->GetShadowWidth(), light->GetShadowMap()->GetShadowHeight());
 
 	light->GetShadowMap()->Write();
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	uniformModel = directionalShadowShader->GetModelLocation();
-	directionalShadowShader->SetDirectionalLightTransform(&light->CalculateLightTransform());
+	uniformModel = shader->GetModelLocation();
+	shader->SetDirectionalLightTransform(&light->CalculateLightTransform());
 
-	directionalShadowShader->Validate();
+	shader->Validate();
 
 	RenderScene();
 
@@ -135,32 +137,24 @@ void Renderer::OmniShadowMapPass(PointLight* light)
 {
 	glViewport(0, 0, light->GetShadowMap()->GetShadowWidth(), light->GetShadowMap()->GetShadowHeight());
 
-	omniShadowShader->UseShader();
+	//implement default shader
+	Shader* shader = (*ShaderMap)["directional_shadow_map_vertex"];
+	shader->UseShader();
 
-	uniformModel = omniShadowShader->GetModelLocation();
-	uniformOmniLightPos = omniShadowShader->GetOmniLightPosLocation();
-	uniformFarPlane = omniShadowShader->GetFarPlaneLocation();
+	uniformModel = shader->GetModelLocation();
+	uniformOmniLightPos = shader->GetOmniLightPosLocation();
+	uniformFarPlane = shader->GetFarPlaneLocation();
 
 	light->GetShadowMap()->Write();
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	glUniform3f(uniformOmniLightPos, light->GetPosition().x, light->GetPosition().y, light->GetPosition().z);
 	glUniform1f(uniformFarPlane, light->GetFarPlane());
-	omniShadowShader->SetLightMatrices(light->CalculateLightTransform());
+	shader->SetLightMatrices(light->CalculateLightTransform());
 
-	omniShadowShader->Validate();
+	shader->Validate();
 
 	RenderScene();
-
-//	ImGui_ImplGlfwGL3_NewFrame();
-//	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-//	//GLint drawFboId = 0, readFboId = 0;
-////	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
-//
-//	//ImGui::GetWindowDrawList()->AddImage((void*) drawFboId, ImVec2(ImGui::GetCursorScreenPos()),
-//	//	ImVec2(ImGui::GetCursorScreenPos().x + window->getBufferWidth() / 2, ImGui::GetCursorScreenPos().y + window->getBufferHeigt() / 2), ImVec2(0, 1), ImVec2(1, 0));
-//	ImGui::Render();
-//	ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -264,12 +258,15 @@ void Renderer::SetLighting()
 
 void Renderer::SetShaders()
 {
-	shader = new Shader();
+	Shader* shader = new Shader();
+	ShaderMap->insert_or_assign("shader", shader);
 	shader->CreateFromFiles("Shaders/shader_vertex.shader", "Shaders/shader_fragment.shader");
 
-	directionalShadowShader = new Shader();
+	Shader* directionalShadowShader = new Shader();
+	ShaderMap->insert_or_assign("directional_shadow_map", directionalShadowShader);
 	directionalShadowShader->CreateFromFiles("Shaders/directional_shadow_map_vertex.shader", "Shaders/directional_shadow_map_fragment.shader");
-	omniShadowShader = new Shader();
+	Shader*  omniShadowShader = new Shader();
+	ShaderMap->insert_or_assign("directional_shadow_map_vertex", omniShadowShader);
 	omniShadowShader->CreateFromFiles("Shaders/omni_shadow_map_vertex.shader", "Shaders/omni_shadow_map_geom.shader", "Shaders/omni_shadow_map_fragment.shader");
 }
 
@@ -385,8 +382,8 @@ void Renderer::CalcAverageNormals(unsigned int* indices, unsigned int indiceCoun
 
 Renderer::~Renderer()
 {
-	delete shader;
-	delete omniShadowShader;
-	delete directionalShadowShader;
+	//delete shaders
+	for (auto& ptr : *ShaderMap)
+		delete ptr.second;
 	delete gui;
 }
