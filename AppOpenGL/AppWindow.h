@@ -9,7 +9,6 @@ class AppWindow
 {
 public:
 	AppWindow();
-	AppWindow(GLint windowWidth, GLint windowHeight);
 
 	int Initialise();
 

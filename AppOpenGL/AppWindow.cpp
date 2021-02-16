@@ -2,8 +2,8 @@
 
 AppWindow::AppWindow()
 {
-	width = 800;
-	height = 600;
+	width = 0;
+	height = 0;
 
 	xChange = 0.0f;
 	yChange = 0.0f;
@@ -15,23 +15,6 @@ AppWindow::AppWindow()
 		keys[i] = 0;
 	}
 }
-
-AppWindow::AppWindow(GLint windowWidth, GLint windowHeight)
-{
-	width = windowWidth;
-	height = windowHeight;
-
-	mHandleMouse = true;
-
-	xChange = 0.0f;
-	yChange = 0.0f;
-
-	for (size_t i = 0; i < 1024; i++)
-	{
-		keys[i] = 0;
-	}
-}
-
 
 int AppWindow::Initialise()
 {
@@ -51,7 +34,9 @@ int AppWindow::Initialise()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);//forward compat
 
-	mainWindow = glfwCreateWindow(width, height, "Test Window", NULL, NULL);
+	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+	mainWindow = glfwCreateWindow(mode->width, mode->height, "Test Window", NULL, NULL);
 	if (!mainWindow)
 	{
 		printf("GLFW window creation failed!");
